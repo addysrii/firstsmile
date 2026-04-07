@@ -9,7 +9,7 @@ const BlogPost = () => {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    fetch(`http://localhost:5001/api/blogs/${id}`)
+    fetch(`https://firstsmile.onrender.com/api/blogs/${id}`)
       .then(res => res.json())
       .then(data => {
         if (!data.error) {
