@@ -1,0 +1,750 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Firstmile — Kanpur's first builder program</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=DM+Mono:wght@400;500&family=Geist:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --black: #0e0d0b;
+    --off-white: #f5f2ec;
+    --warm-white: #faf8f4;
+    --accent: #c8a96e;
+    --accent-dark: #9a7d47;
+    --muted: #7a7669;
+    --border: #e2ddd4;
+    --serif: 'Instrument Serif', Georgia, serif;
+    --mono: 'DM Mono', monospace;
+    --sans: 'Geist', sans-serif;
+  }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    background: var(--warm-white);
+    color: var(--black);
+    font-family: var(--sans);
+    font-weight: 300;
+    line-height: 1.7;
+    overflow-x: hidden;
+  }
+
+  /* NAV */
+  nav {
+    position: fixed;
+    top: 0; left: 0; right: 0;
+    z-index: 100;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 1.25rem 2.5rem;
+    background: rgba(250, 248, 244, 0.92);
+    backdrop-filter: blur(12px);
+    border-bottom: 0.5px solid var(--border);
+  }
+
+  .nav-logo {
+    font-family: var(--serif);
+    font-size: 1.15rem;
+    color: var(--black);
+    letter-spacing: 0.02em;
+  }
+
+  .nav-logo span {
+    color: var(--accent);
+  }
+
+  .nav-right {
+    display: flex;
+    align-items: center;
+    gap: 2rem;
+  }
+
+  .nav-right a {
+    font-size: 0.8rem;
+    font-family: var(--mono);
+    color: var(--muted);
+    text-decoration: none;
+    letter-spacing: 0.05em;
+    transition: color 0.2s;
+  }
+
+  .nav-right a:hover { color: var(--black); }
+
+  .nav-apply {
+    background: var(--black) !important;
+    color: var(--off-white) !important;
+    padding: 0.5rem 1.25rem;
+    border-radius: 2px;
+    font-family: var(--mono) !important;
+    font-size: 0.75rem !important;
+    letter-spacing: 0.08em !important;
+    transition: background 0.2s !important;
+  }
+
+  .nav-apply:hover { background: var(--accent-dark) !important; }
+
+  /* HERO */
+  .hero {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    padding: 0 2.5rem 5rem;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .hero-bg {
+    position: absolute;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background:
+      radial-gradient(ellipse 60% 50% at 70% 30%, rgba(200, 169, 110, 0.08) 0%, transparent 70%),
+      radial-gradient(ellipse 40% 60% at 20% 80%, rgba(200, 169, 110, 0.05) 0%, transparent 60%);
+    pointer-events: none;
+  }
+
+  .hero-tag {
+    font-family: var(--mono);
+    font-size: 0.7rem;
+    color: var(--accent);
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    margin-bottom: 1.5rem;
+    opacity: 0;
+    animation: fadeUp 0.8s ease forwards 0.2s;
+  }
+
+  .hero-headline {
+    font-family: var(--serif);
+    font-size: clamp(3.5rem, 8vw, 7rem);
+    line-height: 1.05;
+    letter-spacing: -0.02em;
+    max-width: 900px;
+    opacity: 0;
+    animation: fadeUp 0.9s ease forwards 0.4s;
+  }
+
+  .hero-headline em {
+    font-style: italic;
+    color: var(--accent);
+  }
+
+  .hero-sub {
+    margin-top: 2rem;
+    max-width: 480px;
+    font-size: 1rem;
+    color: var(--muted);
+    line-height: 1.75;
+    opacity: 0;
+    animation: fadeUp 0.9s ease forwards 0.6s;
+  }
+
+  .hero-actions {
+    margin-top: 2.5rem;
+    display: flex;
+    align-items: center;
+    gap: 1.5rem;
+    opacity: 0;
+    animation: fadeUp 0.9s ease forwards 0.8s;
+  }
+
+  .btn-primary {
+    background: var(--black);
+    color: var(--off-white);
+    padding: 0.85rem 2rem;
+    border-radius: 2px;
+    font-family: var(--mono);
+    font-size: 0.78rem;
+    letter-spacing: 0.08em;
+    text-decoration: none;
+    transition: background 0.2s, transform 0.2s;
+    display: inline-block;
+  }
+
+  .btn-primary:hover {
+    background: var(--accent-dark);
+    transform: translateY(-1px);
+  }
+
+  .btn-ghost {
+    font-family: var(--mono);
+    font-size: 0.75rem;
+    letter-spacing: 0.06em;
+    color: var(--muted);
+    text-decoration: none;
+    border-bottom: 1px solid var(--border);
+    padding-bottom: 2px;
+    transition: color 0.2s, border-color 0.2s;
+  }
+
+  .btn-ghost:hover {
+    color: var(--black);
+    border-color: var(--black);
+  }
+
+  .hero-scroll {
+    position: absolute;
+    bottom: 2rem;
+    right: 2.5rem;
+    font-family: var(--mono);
+    font-size: 0.65rem;
+    color: var(--muted);
+    letter-spacing: 0.1em;
+    writing-mode: vertical-rl;
+    opacity: 0;
+    animation: fadeUp 1s ease forwards 1.2s;
+  }
+
+  /* TICKER */
+  .ticker {
+    background: var(--black);
+    color: var(--accent);
+    padding: 0.65rem 0;
+    overflow: hidden;
+    white-space: nowrap;
+  }
+
+  .ticker-inner {
+    display: inline-flex;
+    gap: 3rem;
+    animation: ticker 20s linear infinite;
+    font-family: var(--mono);
+    font-size: 0.72rem;
+    letter-spacing: 0.1em;
+  }
+
+  .ticker-inner span { opacity: 0.6; }
+  .ticker-inner b { opacity: 1; font-weight: 500; }
+
+  @keyframes ticker {
+    from { transform: translateX(0); }
+    to { transform: translateX(-50%); }
+  }
+
+  /* SECTIONS */
+  section {
+    padding: 6rem 2.5rem;
+    max-width: 1100px;
+    margin: 0 auto;
+  }
+
+  .section-label {
+    font-family: var(--mono);
+    font-size: 0.68rem;
+    color: var(--accent);
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    margin-bottom: 1rem;
+  }
+
+  /* ABOUT */
+  .about-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 5rem;
+    align-items: start;
+  }
+
+  .about-left h2 {
+    font-family: var(--serif);
+    font-size: clamp(2rem, 4vw, 3.2rem);
+    line-height: 1.2;
+    margin-bottom: 1.5rem;
+  }
+
+  .about-left h2 em {
+    font-style: italic;
+    color: var(--accent);
+  }
+
+  .about-left p {
+    color: var(--muted);
+    font-size: 0.95rem;
+    margin-bottom: 1rem;
+  }
+
+  .about-right {
+    padding-top: 1rem;
+  }
+
+  .stat-block {
+    border-top: 0.5px solid var(--border);
+    padding: 1.5rem 0;
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+  }
+
+  .stat-block:last-child { border-bottom: 0.5px solid var(--border); }
+
+  .stat-num {
+    font-family: var(--serif);
+    font-size: 2.5rem;
+    color: var(--black);
+    line-height: 1;
+  }
+
+  .stat-label {
+    font-family: var(--mono);
+    font-size: 0.7rem;
+    color: var(--muted);
+    letter-spacing: 0.08em;
+    max-width: 160px;
+    text-align: right;
+  }
+
+  /* WHAT YOU GET */
+  .what-headline {
+    font-family: var(--serif);
+    font-size: clamp(2rem, 4vw, 3rem);
+    margin-bottom: 3rem;
+  }
+
+  .what-headline em { font-style: italic; color: var(--accent); }
+
+  .what-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1px;
+    background: var(--border);
+    border: 0.5px solid var(--border);
+  }
+
+  .what-card {
+    background: var(--warm-white);
+    padding: 2rem;
+    transition: background 0.2s;
+  }
+
+  .what-card:hover { background: var(--off-white); }
+
+  .what-num {
+    font-family: var(--mono);
+    font-size: 0.65rem;
+    color: var(--accent);
+    letter-spacing: 0.1em;
+    margin-bottom: 1rem;
+  }
+
+  .what-card h3 {
+    font-family: var(--serif);
+    font-size: 1.3rem;
+    margin-bottom: 0.75rem;
+    line-height: 1.3;
+  }
+
+  .what-card p {
+    font-size: 0.85rem;
+    color: var(--muted);
+    line-height: 1.7;
+  }
+
+  /* WHO */
+  .who-section {
+    background: var(--black);
+    color: var(--off-white);
+    padding: 6rem 2.5rem;
+  }
+
+  .who-inner {
+    max-width: 1100px;
+    margin: 0 auto;
+  }
+
+  .who-inner .section-label { color: var(--accent); }
+
+  .who-headline {
+    font-family: var(--serif);
+    font-size: clamp(2rem, 4vw, 3rem);
+    margin-bottom: 3rem;
+    color: var(--off-white);
+  }
+
+  .who-headline em { font-style: italic; color: var(--accent); }
+
+  .who-list {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0;
+  }
+
+  .who-item {
+    border-top: 0.5px solid rgba(255,255,255,0.1);
+    padding: 1.5rem 0;
+    padding-right: 3rem;
+    display: flex;
+    gap: 1rem;
+    align-items: flex-start;
+  }
+
+  .who-item:nth-child(even) { padding-right: 0; padding-left: 3rem; border-left: 0.5px solid rgba(255,255,255,0.1); }
+
+  .who-check {
+    font-family: var(--mono);
+    font-size: 0.7rem;
+    color: var(--accent);
+    margin-top: 4px;
+    flex-shrink: 0;
+  }
+
+  .who-item p {
+    font-size: 0.9rem;
+    color: rgba(245, 242, 236, 0.75);
+    line-height: 1.6;
+  }
+
+  .who-item strong {
+    color: var(--off-white);
+    font-weight: 400;
+    display: block;
+    margin-bottom: 0.2rem;
+    font-size: 0.95rem;
+  }
+
+  /* NOT FOR */
+  .notfor {
+    border: 0.5px solid var(--border);
+    padding: 2rem;
+    margin-top: 3rem;
+    background: rgba(200, 169, 110, 0.04);
+  }
+
+  .notfor-label {
+    font-family: var(--mono);
+    font-size: 0.65rem;
+    color: var(--muted);
+    letter-spacing: 0.12em;
+    margin-bottom: 1rem;
+    opacity: 0.7;
+  }
+
+  .notfor p {
+    font-size: 0.85rem;
+    color: rgba(245, 242, 236, 0.6);
+    line-height: 1.6;
+  }
+
+  /* FROM VANSHIKA */
+  .from-section {
+    padding: 6rem 2.5rem;
+    background: var(--off-white);
+    border-top: 0.5px solid var(--border);
+    border-bottom: 0.5px solid var(--border);
+  }
+
+  .from-inner {
+    max-width: 680px;
+    margin: 0 auto;
+  }
+
+  .from-inner .section-label { margin-bottom: 2rem; }
+
+  blockquote {
+    font-family: var(--serif);
+    font-size: clamp(1.4rem, 3vw, 2rem);
+    line-height: 1.5;
+    color: var(--black);
+    margin-bottom: 2rem;
+    font-style: italic;
+  }
+
+  .from-name {
+    font-family: var(--mono);
+    font-size: 0.72rem;
+    color: var(--muted);
+    letter-spacing: 0.08em;
+  }
+
+  /* APPLY */
+  .apply-section {
+    padding: 8rem 2.5rem;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .apply-bg {
+    position: absolute;
+    top: 50%; left: 50%;
+    transform: translate(-50%, -50%);
+    width: 600px;
+    height: 600px;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(200, 169, 110, 0.07) 0%, transparent 70%);
+    pointer-events: none;
+  }
+
+  .apply-inner {
+    position: relative;
+    z-index: 1;
+  }
+
+  .apply-headline {
+    font-family: var(--serif);
+    font-size: clamp(2.5rem, 6vw, 5rem);
+    line-height: 1.1;
+    margin-bottom: 1.5rem;
+  }
+
+  .apply-headline em { font-style: italic; color: var(--accent); }
+
+  .apply-sub {
+    font-size: 0.9rem;
+    color: var(--muted);
+    margin-bottom: 2.5rem;
+    font-family: var(--mono);
+    letter-spacing: 0.04em;
+  }
+
+  .apply-note {
+    margin-top: 1.5rem;
+    font-family: var(--mono);
+    font-size: 0.65rem;
+    color: var(--muted);
+    letter-spacing: 0.08em;
+    opacity: 0.7;
+  }
+
+  /* FOOTER */
+  footer {
+    border-top: 0.5px solid var(--border);
+    padding: 2rem 2.5rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  .footer-logo {
+    font-family: var(--serif);
+    font-size: 1rem;
+    color: var(--black);
+  }
+
+  .footer-logo span { color: var(--accent); }
+
+  .footer-right {
+    font-family: var(--mono);
+    font-size: 0.65rem;
+    color: var(--muted);
+    letter-spacing: 0.08em;
+  }
+
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(24px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  @media (max-width: 768px) {
+    nav { padding: 1rem 1.25rem; }
+    .nav-right a:not(.nav-apply) { display: none; }
+    .hero { padding: 0 1.25rem 4rem; }
+    section { padding: 4rem 1.25rem; }
+    .about-grid { grid-template-columns: 1fr; gap: 3rem; }
+    .what-grid { grid-template-columns: 1fr; }
+    .who-list { grid-template-columns: 1fr; }
+    .who-item:nth-child(even) { padding-left: 0; border-left: none; }
+    .from-section, .apply-section, .who-section { padding: 4rem 1.25rem; }
+    footer { flex-direction: column; gap: 0.75rem; text-align: center; }
+  }
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="nav-logo">first<span>mile</span></div>
+  <div class="nav-right">
+    <a href="#about">about</a>
+    <a href="#what">what you get</a>
+    <a href="#apply" class="nav-apply">apply now</a>
+  </div>
+</nav>
+
+<section class="hero" style="max-width:100%; padding-top: 80px;">
+  <div class="hero-bg"></div>
+  <div class="hero-tag">Kanpur, Uttar Pradesh &nbsp;&nbsp; Pilot 2025</div>
+  <h1 class="hero-headline">
+    The first bet<br>on you. <em>Before</em><br>you're obvious.
+  </h1>
+  <p class="hero-sub">
+    A program for 5 young builders in Kanpur. Class 11, 12, and first two years of college.
+    No pitch competitions. No hackathon trophies. Just someone actually backing you early.
+  </p>
+  <div class="hero-actions">
+    <a href="#apply" class="btn-primary">Apply — Pilot 2025</a>
+    <a href="#about" class="btn-ghost">What is this?</a>
+  </div>
+  <div class="hero-scroll">scroll to read</div>
+</section>
+
+<div class="ticker">
+  <div class="ticker-inner">
+    <b>5 builders selected</b>
+    <span>//</span>
+    <b>Kanpur</b>
+    <span>//</span>
+    <b>Class 11 to 2nd year college</b>
+    <span>//</span>
+    <b>Pilot 2025</b>
+    <span>//</span>
+    <b>No equity. No BS.</b>
+    <span>//</span>
+    <b>5 builders selected</b>
+    <span>//</span>
+    <b>Kanpur</b>
+    <span>//</span>
+    <b>Class 11 to 2nd year college</b>
+    <span>//</span>
+    <b>Pilot 2025</b>
+    <span>//</span>
+    <b>No equity. No BS.</b>
+    <span>//</span>
+    <b>5 builders selected</b>
+    <span>//</span>
+    <b>Kanpur</b>
+    <span>//</span>
+    <b>Class 11 to 2nd year college</b>
+    <span>//</span>
+    <b>Pilot 2025</b>
+    <span>//</span>
+    <b>No equity. No BS.</b>
+    <span>//</span>
+  </div>
+</div>
+
+<section id="about">
+  <div class="about-grid">
+    <div class="about-left">
+      <div class="section-label">// what is firstmile</div>
+      <h2>Not a hackathon.<br>Not a <em>workshop.</em><br>Something rarer.</h2>
+      <p>Every serious builder I know had one moment. Someone believed in them before they were ready. Before they had a product. Before they had proof. That one person changed everything.</p>
+      <p>Firstmile is that moment. For 5 young builders in Kanpur. We find you, back you, and stay with you through the hardest part. The first mile.</p>
+      <p>We are not taking equity. We are not charging you. We are not running you through a curriculum. We are just going to help you build the thing you're already thinking about.</p>
+    </div>
+    <div class="about-right">
+      <div class="stat-block">
+        <div class="stat-num">5</div>
+        <div class="stat-label">builders selected in the pilot</div>
+      </div>
+      <div class="stat-block">
+        <div class="stat-num">0</div>
+        <div class="stat-label">equity taken. ever.</div>
+      </div>
+      <div class="stat-block">
+        <div class="stat-num">8</div>
+        <div class="stat-label">weeks of actual support</div>
+      </div>
+      <div class="stat-block">
+        <div class="stat-num">1</div>
+        <div class="stat-label">city. kanpur. for now.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="what" style="padding-top: 0;">
+  <div class="section-label">// what you actually get</div>
+  <h2 class="what-headline">Not vibes.<br><em>Actual things.</em></h2>
+  <div class="what-grid">
+    <div class="what-card">
+      <div class="what-num">01 //</div>
+      <h3>Someone in your corner</h3>
+      <p>A real person you can text when you're stuck. Not a mentor who shows up once a month. Someone who actually knows what you're building and asks hard questions.</p>
+    </div>
+    <div class="what-card">
+      <div class="what-num">02 //</div>
+      <h3>Small grant</h3>
+      <p>Enough to buy what you actually need. A domain. A SaaS tool. Raw materials. No strings, no pitch deck required. We just need to know what it's for.</p>
+    </div>
+    <div class="what-card">
+      <div class="what-num">03 //</div>
+      <h3>Real introductions</h3>
+      <p>Not a "connect on LinkedIn." Actual warm intros to founders, operators, and people who can open doors for your specific project. No cold outreach needed.</p>
+    </div>
+    <div class="what-card">
+      <div class="what-num">04 //</div>
+      <h3>Help building in public</h3>
+      <p>You learn to talk about what you're building. On Twitter. On LinkedIn. We help you do this without it feeling cringe. This is how you get noticed before you're ready.</p>
+    </div>
+    <div class="what-card">
+      <div class="what-num">05 //</div>
+      <h3>Weekly check-ins</h3>
+      <p>No 50-slide decks. Just honest conversations about what you did, what you didn't do, and what's actually in the way. Accountability without the pressure.</p>
+    </div>
+    <div class="what-card">
+      <div class="what-num">06 //</div>
+      <h3>You stay in Kanpur</h3>
+      <p>We are not asking you to relocate to Bangalore. You build from here. That's the point. If the ecosystem won't come to you, you build it yourself.</p>
+    </div>
+  </div>
+</section>
+
+<div class="who-section">
+  <div class="who-inner">
+    <div class="section-label">// who this is for</div>
+    <h2 class="who-headline">You are already<br>building <em>something.</em></h2>
+    <div class="who-list">
+      <div class="who-item">
+        <div class="who-check">+</div>
+        <p><strong>Class 11 or 12 student</strong>You have an idea and you can't stop thinking about it. Board exams are happening but so is this.</p>
+      </div>
+      <div class="who-item">
+        <div class="who-check">+</div>
+        <p><strong>1st or 2nd year college</strong>You got to HBTU, PSIT, or wherever and realized this is not what you thought. You want to build something.</p>
+      </div>
+      <div class="who-item">
+        <div class="who-check">+</div>
+        <p><strong>Already started</strong>A project. A side hustle. A GitHub repo. Something that proves you don't just talk about building.</p>
+      </div>
+      <div class="who-item">
+        <div class="who-check">+</div>
+        <p><strong>High agency</strong>You don't wait for permission. You figure things out. You are not looking for someone to hand you a roadmap.</p>
+      </div>
+      <div class="who-item">
+        <div class="who-check">+</div>
+        <p><strong>Kanpur based</strong>You are here. You want to build from here. You are not waiting until you can "move to Bangalore."</p>
+      </div>
+      <div class="who-item">
+        <div class="who-check">+</div>
+        <p><strong>Okay with being uncomfortable</strong>We will ask you hard questions. We will challenge your assumptions. That's what makes this useful.</p>
+      </div>
+    </div>
+    <div class="notfor">
+      <div class="notfor-label">// not for you if</div>
+      <p>You are looking for a certificate. You want someone to validate your idea without doing the work. You're applying because your parents think it looks good on a resume. We can tell. Please don't waste our time or yours.</p>
+    </div>
+  </div>
+</div>
+
+<div class="from-section">
+  <div class="from-inner">
+    <div class="section-label">// from vanshika, founder</div>
+    <blockquote>
+      "I watched the Localhost video like everyone else. And then I looked around and thought: who is doing this for the kid in Kanpur? The one who can't move to Bangalore. The one nobody's looking at yet. I don't have millions to give. But I have time, I have a network, and I genuinely give a damn. That felt like enough to start."
+    </blockquote>
+    <div class="from-name">Vanshika &nbsp;//&nbsp; Kanpur &nbsp;//&nbsp; Freelancer, organic distribution &nbsp;//&nbsp; Building this in public</div>
+  </div>
+</div>
+
+<section id="apply" class="apply-section" style="max-width:100%;">
+  <div class="apply-bg"></div>
+  <div class="apply-inner">
+    <div class="section-label" style="justify-content:center; display:flex;">// applications open</div>
+    <h2 class="apply-headline">5 spots.<br><em>Are you one</em><br>of them?</h2>
+    <p class="apply-sub">Takes about 15 minutes. We read every single one.</p>
+    <a href="#" class="btn-primary" style="font-size:0.85rem; padding: 1rem 2.5rem;">Apply for Firstmile Pilot</a>
+    <div class="apply-note">Kanpur only &nbsp;&nbsp; Class 11 to 2nd year college &nbsp;&nbsp; No prior experience required &nbsp;&nbsp; Rolling applications</div>
+  </div>
+</section>
+
+<footer>
+  <div class="footer-logo">first<span>mile</span></div>
+  <div class="footer-right">Kanpur, UP &nbsp;&nbsp; Pilot 2025 &nbsp;&nbsp; Built by Vanshika</div>
+</footer>
+
+</body>
+</html>
