@@ -13,7 +13,7 @@ const WriteBlog = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const response = await fetch('http://localhost:5001/api/blogs', {
+      const response = await fetch('https://firstsmile.onrender.com/api/blogs', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ title, excerpt, content, author })
