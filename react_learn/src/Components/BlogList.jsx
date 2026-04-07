@@ -8,7 +8,7 @@ const BlogList = () => {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    fetch('http://localhost:5001/api/blogs')
+    fetch('https://firstsmile.onrender.com/api/blogs')
       .then(res => res.json())
       .then(data => {
         setBlogs(data);
